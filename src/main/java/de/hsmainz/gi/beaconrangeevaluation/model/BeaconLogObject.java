@@ -60,15 +60,15 @@ public class BeaconLogObject implements Serializable,
      * Add a {@link de.hsmainz.geoinform.hsmainzranging.BeaconLogObject.Measurement} to this
      * {@link de.hsmainz.geoinform.hsmainzranging.BeaconLogObject}s list
      * {@link #measurements} by generating it internally through it's Constructor
-     * {@link de.hsmainz.geoinform.hsmainzranging.BeaconLogObject.Measurement#Measurement(long, int, int, double)}
-     * by chaining through {@link #addMeasurement(long, int, int, double)} at the current time
+     * {@link de.hsmainz.geoinform.hsmainzranging.BeaconLogObject.Measurement#Measurement(long, double, int, double)}
+     * by chaining through {@link #addMeasurement(long, double, int, double)} at the current time
      * ({@link System#currentTimeMillis()})
      *
      * @param   rssi            received signal strength indicator
      * @param   txPower         transmit power
      * @param   calcDistance    calculated distance
      */
-    public void addMeasurement(int rssi, int txPower, double calcDistance) {
+    public void addMeasurement(double rssi, int txPower, double calcDistance) {
         addMeasurement(new Measurement(System.currentTimeMillis(), rssi, txPower, calcDistance));
     }
 
@@ -76,14 +76,14 @@ public class BeaconLogObject implements Serializable,
      * Add a {@link de.hsmainz.geoinform.hsmainzranging.BeaconLogObject.Measurement} to this
      * {@link de.hsmainz.geoinform.hsmainzranging.BeaconLogObject}s list
      * {@link #measurements} by generating it internally through it's Constructor
-     * {@link de.hsmainz.geoinform.hsmainzranging.BeaconLogObject.Measurement#Measurement(long, int, int, double)}
+     * {@link de.hsmainz.geoinform.hsmainzranging.BeaconLogObject.Measurement#Measurement(long, double, int, double)}
      *
      * @param   timestamp       timestamp of the Measurement
      * @param   rssi            received signal strength indicator
      * @param   txPower         transmit power
      * @param   calcDistance    calculated distance
      */
-    public void addMeasurement(long timestamp, int rssi, int txPower, double calcDistance) {
+    public void addMeasurement(long timestamp, double rssi, int txPower, double calcDistance) {
         addMeasurement(new Measurement(timestamp, rssi, txPower, calcDistance));
     }
 
@@ -365,7 +365,7 @@ public class BeaconLogObject implements Serializable,
     public static class Measurement implements Comparable<Measurement> {
 
         private long      timestamp;
-        private int       rssi;
+        private double    rssi;
         private int       txPower;
         private double    calcDistance;
 
@@ -377,7 +377,7 @@ public class BeaconLogObject implements Serializable,
          * @param   txPower         transmit power
          * @param   calcDistance    calculated distance
          */
-        public Measurement(int rssi, int txPower, double calcDistance) {
+        public Measurement(double rssi, int txPower, double calcDistance) {
             this(System.currentTimeMillis(), rssi, txPower, calcDistance);
         }
 
@@ -390,7 +390,7 @@ public class BeaconLogObject implements Serializable,
          * @param   txPower         transmit power
          * @param   calcDistance    calculated distance
          */
-        public Measurement(long timestamp, int rssi, int txPower, double calcDistance) {
+        public Measurement(long timestamp, double rssi, int txPower, double calcDistance) {
             this.timestamp = timestamp;
             this.rssi = rssi;
             this.txPower = txPower;
@@ -403,7 +403,7 @@ public class BeaconLogObject implements Serializable,
          *
          * @return  received signal strength indicator
          */
-        public int getRssi() {
+        public double getRssi() {
             return rssi;
         }
 
@@ -496,7 +496,7 @@ public class BeaconLogObject implements Serializable,
             if (this.timestamp - other.getTimestamp() != 0)
                 return new Long(this.timestamp - other.getTimestamp()).intValue();
             if (this.rssi - other.getRssi() != 0)
-                return this.rssi - other.getRssi();
+                return new Double(this.rssi - other.getRssi()).intValue();
             if (this.txPower - other.getTxPower() != 0)
                 return this.txPower - other.getTxPower();
             return this.calcDistance > other.getCalcDistance() ? 1 : this.calcDistance < other.getCalcDistance() ? -1 : 0;
